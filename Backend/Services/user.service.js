@@ -5,7 +5,6 @@ const createUser = async ({ firstname, lastname, email, password }) => {
         if (!firstname || !email || !password) {
             throw new Error(" All fields are required");
         }
-        // Ensure lastname is always a string (even if undefined)
         lastname = lastname || "";
         const user = await User.create({ 
         firstname,

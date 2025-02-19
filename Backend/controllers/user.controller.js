@@ -25,5 +25,38 @@ export const registerUser = async (req, res, next) => {
 
       console.log(req.body)
       next()
+}
 
+export const LoginUser = async(req , res , next ) => {
+  const errors = validationResult(req)
+  if(!errors.isEmpty){
+    return res.status(400).json({errors: errors.array}) ;
+  }
+     const{email , password} = req.body;
+     if(!(email || password)){
+      throw new Error("Email and psssword is required")
+     }
+
+     const user = await User.findOne({email}).select("+password") ;
+
+     if(!user){
+      return res.status(401).json({message: 'invalid Email or password'});
+     }else{
+      console.log("User found successfully")
+     }
+
+     const isMatch = await user.comparePassword(password)
+
+     if(!isMatch){
+      return res.status(401).json({message: 'Invalid email or password'});
+     }else{
+      console.log("Logged in successfully")
+     }
+     const token =  user.generateAuthToken();
+     res.cookie('token', token)
+     res.status(200).json({token , user});
+}
+
+export const getUserProfile = async(req, res, next) => {
+   res.status(200).json(req.user)
 }
