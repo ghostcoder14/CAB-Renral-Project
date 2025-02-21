@@ -1,9 +1,8 @@
 import { Router } from 'express'
 const router = Router()
 import { body } from 'express-validator';
-import { getUserProfile, registerUser } from '../controllers/user.controller.js';
-import { LoginUser } from '../controllers/user.controller.js';
-import { authUser } from '../middleware/auth.middleware.js';
+import { getUserProfile, logoutUser, registerUser, LoginUser } from '../controllers/user.controller.js';
+import { authUser  } from '../middleware/auth.middleware.js';
 
 
 router.post('/register', [
@@ -31,7 +30,24 @@ router.post('/login',[
 LoginUser 
 )
 
-router.get('/profile', authUser, getUserProfile)
+import mongoose  from "mongoose";
+
+const blackListingTokenSchema = new mongoose.Schema({
+    token: {
+        type: String,
+        required: true,
+        unique: true 
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+        expires: 86400 //24hr
+    }
+});
+
+export const TokenSchema = mongoose.model('TokenSchema', blackListingTokenSchema)
+
+router.get('/logout', authUser,  logoutUser)
 
 
 export default router 
