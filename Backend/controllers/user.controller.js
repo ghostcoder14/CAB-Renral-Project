@@ -2,7 +2,7 @@ import { User } from "../Models/user.model.js"
 import createUser from "../Services/user.service.js"
 import { validationResult } from "express-validator"
 import { TokenSchema } from "../Models/blacklistToken.model.js"
-import { captainModel } from "../Models/captain.model.js"
+
 
 export const registerUser = async(req, res, next) => {
     const errors = validationResult(req)
@@ -14,7 +14,7 @@ export const registerUser = async(req, res, next) => {
 
       const isUserExisted = await User.findOne({email})
       if(isUserExisted){
-        return res.status(400).json({message:'Userallready exist'})
+        return res.status(400).json({message:'User allready exist'})
       }
       const hashedPassword = await User.hashPassword(password)
 
@@ -63,18 +63,23 @@ export const LoginUser = async(req , res  ) => {
 }
 
 export const getUserProfile = async(req, res, next) => {
-   res.status(200).json(req.user)
+  res.status(200).json(req.user)
    next()
 }
 
 export const logoutUser = async (req, res) => {
-  res.clearCookie('token');
 
   const token = req.cookies.token || (req.headers?.authorization && req.headers.authorization?.split(' ')[ 1 ])
 
+  if (!token) {
+    return res.status(400).json({ message: 'No token provided' });
+}
+
+  res.clearCookie('token');
+
   await TokenSchema.create({token})
 
-  res.status(200).json({message: 'Logged Out'})
+ return res.status(200).json({message: 'Logged Out'})
 
 }
 

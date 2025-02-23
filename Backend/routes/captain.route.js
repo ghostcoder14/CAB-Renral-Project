@@ -1,6 +1,8 @@
 import { Router } from "express";
-import registerCaptain from "../controllers/captain.controller.js";
+import { registerCaptain, loginCaptain, profileCaptain, logoutCaptain } from "../controllers/captain.controller.js";
 import { body } from "express-validator";
+import { CaptainMiddleWare_Auth } from "../middleware/captainAuth.middleware.js";
+
 
 const captainRouter = Router();
 
@@ -33,6 +35,18 @@ captainRouter.post('/registerCaptain' , [
 
 ], registerCaptain)
 
+captainRouter.post('/login',[
+    body('email')
+    .isLength({min: 3})
+    .withMessage('Invalid Email'),
+    body('password')
+    .isLength({min: 8})
+    .withMessage('Invalid Password')
+],  loginCaptain)
 
+
+captainRouter.get('/profile', CaptainMiddleWare_Auth, profileCaptain)
+
+captainRouter.get('/logout', CaptainMiddleWare_Auth, logoutCaptain )
 
  export default captainRouter 
