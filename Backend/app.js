@@ -5,6 +5,7 @@ const app = express();
 import cors from 'cors'
 import userRouter from "./routes/user.routes.js";
 import cookieParser from "cookie-parser";
+import captainRouter from './routes/captain.route.js';
 
 app.use(cors())
 app.use(express.json())
@@ -17,6 +18,8 @@ app.get('/', (req, res) => {
 });
 
 
-app.use('/api/v1/', userRouter)
+app.use('/user', userRouter)
+
+app.use('/captain', captainRouter)
 
 export default app;

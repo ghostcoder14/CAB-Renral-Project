@@ -2,9 +2,9 @@ import { User } from "../Models/user.model.js"
 import createUser from "../Services/user.service.js"
 import { validationResult } from "express-validator"
 import { TokenSchema } from "../Models/blacklistToken.model.js"
+import { captainModel } from "../Models/captain.model.js"
 
-
-export const registerUser = async (req, res, next) => {
+export const registerUser = async(req, res, next) => {
     const errors = validationResult(req)
       if(!errors.isEmpty()){
         return res.status(400).json({errors: errors.array()})
@@ -12,6 +12,10 @@ export const registerUser = async (req, res, next) => {
 
       const { firstname, lastname, email, password } = req.body;
 
+      const isUserExisted = await User.findOne({email})
+      if(isUserExisted){
+        return res.status(400).json({message:'Userallready exist'})
+      }
       const hashedPassword = await User.hashPassword(password)
 
       const user = await createUser({
@@ -28,7 +32,7 @@ export const registerUser = async (req, res, next) => {
       next()
 }
 
-export const LoginUser = async(req , res , next ) => {
+export const LoginUser = async(req , res  ) => {
   const errors = validationResult(req)
   if(!errors.isEmpty){
     return res.status(400).json({errors: errors.array}) ;
@@ -63,7 +67,7 @@ export const getUserProfile = async(req, res, next) => {
    next()
 }
 
-export const logoutUser = async (req, res, next) => {
+export const logoutUser = async (req, res) => {
   res.clearCookie('token');
 
   const token = req.cookies.token || (req.headers?.authorization && req.headers.authorization?.split(' ')[ 1 ])
