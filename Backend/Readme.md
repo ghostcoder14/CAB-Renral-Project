@@ -10,7 +10,7 @@ This is a **Car Rental Website** built using the **MERN stack** (MongoDB, Expres
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB
 - **Authentication**: JWT
-- **Deployment**: Vercel (Frontend), Render/Atlas (Backend & Database)
+
 
 ---
 
