@@ -4,43 +4,49 @@ import { validationResult } from "express-validator";
 import { TokenSchema } from "../Models/blacklistToken.model.js";
 
 
- export const registerCaptain = async(req, res) => {
-    console.log("Captain Controller called");
-    
-    const errors = validationResult(req)
-    if(!errors.isEmpty()){
-        return res.status(400).json({errors: errors.array()})
-    }
+export const registerCaptain = async (req, res) => {
+  console.log("Captain Controller called");
+  console.log(req.body);
 
-    try {
-        const { firstname,lastname, email, password , vehicle} = req.body
-    
-        const isCaptainExisted = await captainModel.findOne({email})
-        if(isCaptainExisted){
-          return  res.status(400).json({message: 'Captain allready Exist'})
-        }
-    
-         const hashedPassword = await captainModel.hashPassword(password)
-       
-        const captain = await createCaptain({
-            firstname,
-            lastname,
-            email,
-            password: hashedPassword,
-            vehicleType:vehicle.vehicleType,
-            plate:vehicle.plate,
-            color:vehicle.color,
-            capacity:vehicle.capacity
-        })
-    
-        const token =  captain.generateAuthToken();
-        return res.status(201).json({token , captain})
-    } catch (error) {
-        console.log("Error Registering in the Captain")
-        return res.status(500).json({ message: "Internal Server Error" });
-    }
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+  }
 
-}
+  try {
+      const { firstname, lastname, email, password, vehicle } = req.body;
+
+      // Validate required fields
+      if (!firstname || !lastname || !email || !password || !vehicle || !vehicle.vehicleType || !vehicle.plate || !vehicle.color || !vehicle.capacity) {
+          return res.status(400).json({ message: "All fields are required" });
+      }
+
+      // Check if captain already exists
+      const isCaptainExisted = await captainModel.findOne({ email });
+      if (isCaptainExisted) {
+          return res.status(400).json({ message: 'Captain already exists' });
+      }
+
+      // Hash the password
+      const hashedPassword = await captainModel.hashPassword(password);
+
+      // Create the captain
+      const captain = await createCaptain({
+          firstname,
+          lastname,
+          email,
+          password: hashedPassword,
+          vehicle // Pass the entire vehicle object
+      });
+
+      // Generate token
+      const token = captain.generateAuthToken();
+      return res.status(201).json({ token, captain });
+  } catch (error) {
+      console.log("Error Registering in the Captain:", error.message);
+      return res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
+};
 
 export const loginCaptain = async(req, res, next) =>{
     console.log("Login Captain Called");

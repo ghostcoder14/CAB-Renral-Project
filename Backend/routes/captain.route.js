@@ -30,7 +30,7 @@ captainRouter.post('/registerCaptain' , [
     .isLength({min :3})
     .withMessage('vehicle-plate must be atleast 3 character'),
     body('vehicle.vehicleType')
-    .isIn(['car', 'motorcycle' , 'auto'])
+    .isIn(['Car', 'Motorbike' , 'Auto'])
     .withMessage('Invalid vehicle type')
 
 ], registerCaptain)

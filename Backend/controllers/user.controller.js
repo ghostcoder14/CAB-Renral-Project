@@ -69,6 +69,8 @@ export const getUserProfile = async(req, res, next) => {
 
 export const logoutUser = async (req, res) => {
 
+ try {
+  console.log("logout called")
   const token = req.cookies.token || (req.headers?.authorization && req.headers.authorization?.split(' ')[ 1 ])
 
   if (!token) {
@@ -80,6 +82,9 @@ export const logoutUser = async (req, res) => {
   await TokenSchema.create({token})
 
  return res.status(200).json({message: 'Logged Out'})
+ } catch (error) {
+   console.error(error)
+ }
 
 }
 
