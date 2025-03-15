@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema({
         trim:true,
         minlength:[3, 'Email should be atleast 3 charcter']
     },
+    
     password:{
         required: true ,
         type:String,

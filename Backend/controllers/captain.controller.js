@@ -58,12 +58,10 @@ export const loginCaptain = async(req, res, next) =>{
 
     try {
         const {email, password} = req.body
-        if(!(email || password)){
-            throw new Error("Email and psssword is required")
+        if(!email || !password){
+            return res.status(400).json({ message: "Email and password are required" })
            }
-    
            const Captain = await captainModel.findOne({email}).select('+password')
-    
            if(!Captain){
             return res.status(401).json({message: 'invalid Email or password'});
            }else{

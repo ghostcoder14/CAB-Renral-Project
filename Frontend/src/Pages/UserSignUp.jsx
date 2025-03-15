@@ -11,7 +11,7 @@ const UserSignUp = () => {
     const[Firstname, setFirstname] = useState('')
     const[Lastname, setlastname] = useState('')
     const[Password, setPassword] = useState('')
-    const[username, setUsername ] = useState('')
+   
     const{user , setUser} = useContext(UserdataContext)
 
 
@@ -22,7 +22,7 @@ const UserSignUp = () => {
         lastname: Lastname,
         password: Password,
         email: Email,
-        username: username
+        
       }
 
       const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/user/register`,newUser)
@@ -39,7 +39,7 @@ const UserSignUp = () => {
        setFirstname('');
        setPassword('');
        setlastname('');
-       setUsername('');
+      
     }
 
 
@@ -96,16 +96,7 @@ const UserSignUp = () => {
                         className="bg-[#eeeeee] py-2 px-4 rounded w-full text-lg placeholder:text-base"
                     />
 
-                    <h3 className="font-semibold text-xl mt-4">What's your username?</h3>
-                    <input
-                        placeholder="Username"
-                        type="text"
-                        value={username}
-                        onChange={(e)=>{
-                            setUsername(e.target.value)
-                        }}
-                        className="rounded bg-[#eeeeee] w-full placeholder:text-base py-2 px-4 text-lg"
-                    />
+                    
 
                     <h3 className="text-xl mt-4 font-semibold">What's your password?</h3>
                     <input
